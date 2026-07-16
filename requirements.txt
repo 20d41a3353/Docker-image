@@ -1,0 +1,28 @@
+# # Spark & Data Lake
+# delta-spark==4.3.1
+# pyspark==4.1.1
+# requests
+# confluent-kafka
+
+# # Machine Learning
+# scikit-learn
+# pandas
+# numpy
+
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# Spark & Data Lake
+delta-spark==4.3.1
+pyspark==4.1.1
+requests
+confluent-kafka
+
+# Machine Learning
+scikit-learn
+pandas
+
+# Natural Language Processing (NLP)
+torch
+transformers
+spacy
+nltk
