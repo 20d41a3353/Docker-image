@@ -1,0 +1,59 @@
+flowchart TD
+    subgraph SS [Staging Server]
+        direction TB
+        files[Source Files] --> nifi[Apache NiFi]
+    end
+
+    nifi -->|Ingest| raw
+    
+    subgraph HDFS [HDFS]
+        direction LR
+        subgraph raw [Raw Files]
+            bancs[Bancs Files .gz]
+            glif[GLIF Files .gz]
+        end
+        
+        raw -->|ETL Jobs| dl
+        
+        subgraph dl [Delta Lake]
+            direction TB
+            desc["<b>Delta Lake (ACID Layer)</b><br>• Stores data in highly optimized <b>Parquet format</b><br>• Appends a transaction log for reliable, versioned reads"]
+        end
+
+        dl -->|ETL Jobs| rep>📄 Reports]
+    end
+    
+    dl -->|ETL Jobs| druid
+    dl -->|ETL Jobs| oracle
+
+    druid[("<b>Apache Druid</b><br>• Real-time analytics database<br>• Fast OLAP queries on event data")]
+    oracle[("<b>Oracle DB</b><br>• Enterprise relational RDBMS<br>• Secure transactional storage")]
+
+    rep -->|Fetch Reports| ms
+    druid -->|Fetch Analytics| ms
+    oracle -->|Query Data| ms
+    
+    subgraph K8s [Kubernetes Cluster]
+        direction LR
+        ms[FinCore Microservices] -->|Serve Reports & Data| fe[FinCore Frontend<br>React App]
+    end
+
+    %% Color Styling %%
+    style SS fill:#FFF3BF,stroke:#FAB005,stroke-width:2px,color:#000
+    style nifi fill:#FFF,stroke:#FAB005,stroke-width:1px,color:#000
+    style files fill:#FFF,stroke:#FAB005,stroke-width:1px,color:#000
+
+    style HDFS fill:#E6FCF5,stroke:#0CA678,stroke-width:2px,color:#000
+    style raw fill:#FFF,stroke:#0CA678,stroke-width:1px,color:#000
+    style bancs fill:#FFF,stroke:#0CA678,stroke-width:1px,color:#000
+    style glif fill:#FFF,stroke:#0CA678,stroke-width:1px,color:#000
+    style dl fill:#E7F5FF,stroke:#228BE6,stroke-width:2px,color:#000
+    style desc fill:#FFF,stroke:#228BE6,stroke-width:1px,color:#000
+    style rep fill:#FFF,stroke:#0CA678,stroke-width:2px,color:#000
+
+    style druid fill:#F3F0FF,stroke:#7950F2,stroke-width:2px,color:#000
+    style oracle fill:#FFF0F6,stroke:#D6336C,stroke-width:2px,color:#000
+
+    style K8s fill:#F8F9FA,stroke:#343A40,stroke-width:2px,color:#000
+    style ms fill:#E8F4F8,stroke:#1C7ED6,stroke-width:2px,color:#000
+    style fe fill:#EBFBEE,stroke:#37B24D,stroke-width:2px,color:#000
